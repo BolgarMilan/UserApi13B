@@ -25,6 +25,6 @@ namespace UserApi.Models
             }
         }
 
-        DbSet<User> Newuser { get; set; } = null!;
+        public DbSet<User> newuser { get; set; } = null!;
     }
 }
