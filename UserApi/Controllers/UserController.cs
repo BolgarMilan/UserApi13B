@@ -42,16 +42,56 @@ namespace UserApi.Controllers
         {
             using (var context = new UserDbContext())
             {
+
                 var existingUser = context.newuser.FirstOrDefault(x => x.Id == azon);
 
-                existingUser.Name = updateUserDto.Name;
-                existingUser.Age = updateUserDto.Age;
-                existingUser.License = updateUserDto.License;
+                if (existingUser != null)
+                {
+                    existingUser.Name = updateUserDto.Name;
+                    existingUser.Age = updateUserDto.Age;
+                    existingUser.License = updateUserDto.License;
 
-                context.newuser.Update(existingUser);
-                context.SaveChanges();
+                    context.newuser.Update(existingUser);
+                    context.SaveChanges();
+                }
 
                 return StatusCode(200, existingUser);
+
+            }
+        }
+
+        [HttpDelete]
+        public ActionResult<object> Delete(Guid azon)
+        {
+            using (var context = new UserDbContext())
+            {
+                var existingUser = context.newuser.FirstOrDefault(x => x.Id == azon);
+
+                if (existingUser == null)
+                {
+                    return NotFound(new { message = "Felhasználó nem található!" });
+                }
+
+                context.newuser.Remove(existingUser);
+                context.SaveChanges();
+
+                return StatusCode(200, new { message = "Sikeres törlés!" });
+            }
+        }
+
+        [HttpGet("{azon}")]
+        public ActionResult<User> GetById(Guid azon)
+        {
+            using (var context = new UserDbContext())
+            {
+                var user = context.newuser.FirstOrDefault(x => x.Id == azon);
+
+                if (user == null)
+                {
+                    return NotFound(new { message = "Felhasználó nem található!" });
+                }
+
+                return Ok(user);
             }
         }
     }
